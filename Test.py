@@ -30,6 +30,12 @@ button3.set_constraints(CenterConstraint(),
                         PixelConstraint(10),
                         ProportionConstraint(10))
 
+checkbox = Checkbox(frame, "ES GEHT")
+checkbox.set_constraints(CenterConstraint(),
+                         DistanceConstraint(button3, ConstantConstraint(10)),
+                         PixelConstraint(10),
+                         ProportionConstraint(5))
+
 frame2 = Label(root, Color("dark grey"))
 frame2.set_constraints(PixelConstraint(-10),
                        CenterConstraint(),
@@ -53,12 +59,6 @@ slider3.set_constraints(ProportionConstraint(70),
                         PixelConstraint(50),
                         ProportionConstraint(20),
                         ProportionConstraint(65))
-
-sliderss = Scrollbar(frame2, orientation=VERTICAL, standard_value=0, value_range=(-20, 20))
-sliderss.set_constraints(ProportionConstraint(50),
-                         PixelConstraint(50),
-                         ProportionConstraint(20),
-                         ProportionConstraint(65))
 
 viscosity_label = Label(frame2, color=Color("yellow"), text="0.1", hover_color=Color("orange"))
 viscosity_label.set_constraints(CenterConstraint(),

@@ -130,7 +130,8 @@ class Widget:
     def get_size_of_text(self, text, size=40, font=STANDARD_FONT):
         return self.parent_widget.get_size_of_text(text, size, font)
 
-    def multiple_line_text(self, position, text: str, width, size=40, line_distance=2, bound="LEFT", color=Color("black"),
+    def multiple_line_text(self, position, text: str, width, size=40, line_distance=2, bound="LEFT",
+                           color=Color("black"),
                            font=STANDARD_FONT):
         self.parent_widget.multiple_line_text(position, text, width, size, line_distance, bound, color, font)
 
@@ -403,7 +404,8 @@ class Scrollbar(Widget):
 
 
 class TextLabel(Widget):
-    def __init__(self, parent_widget, text, line_distance=-10, font=STANDARD_FONT, text_bound="CENTER", color=Color("black"), text_size=40,
+    def __init__(self, parent_widget, text, line_distance=-10, font=STANDARD_FONT, text_bound="CENTER",
+                 color=Color("black"), text_size=40,
                  background_color=Color("white")):
         Widget.__init__(self, parent_widget)
         self._text = text
@@ -412,7 +414,6 @@ class TextLabel(Widget):
         self.text_size = text_size
         self.line_distance = line_distance
         self.text_bound = text_bound
-
         self.background_color = background_color
         self.background_label = Label(self, color=self.background_color)
         self.background_label.set_constraints(PixelConstraint(0),
@@ -422,6 +423,26 @@ class TextLabel(Widget):
 
     def draw(self):
         Widget.draw(self)
-        pos = (self.pos[0]-self.width/2, self.pos[1]-self.height/2)
-        self.multiple_line_text(pos, self._text, self.width, self.text_size, self.line_distance, self.text_bound, self.color,
+        pos = (self.pos[0] - self.width / 2, self.pos[1] - self.height / 2)
+        self.multiple_line_text(pos, self._text, self.width, self.text_size, self.line_distance, self.text_bound,
+                                self.color,
                                 self.font)
+
+
+class Checkbox(Widget):
+    def __init__(self, parent_widget, label: str, font=STANDARD_FONT, size=40, active_color=Color("black"), inactive_color=Color("dark gray")):
+        Widget.__init__(self, parent_widget)
+
+        self.inactive_color = inactive_color
+        self.active_color = active_color
+        self.label = label
+        self.checkbox_label = Label(self, color=self.inactive_color)
+        self.checkbox_label.set_constraints(PixelConstraint(0),
+                                            CenterConstraint,
+                                            AspectConstraint(1),
+                                            ProportionConstraint(100))
+        self.font = font
+        self.size = size
+
+    def draw(self):
+        Widget.draw(self)
