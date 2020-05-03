@@ -7,7 +7,7 @@ STANDARD_FONT = pg.freetype.Font("Helvetica-Bold-Font.ttf", 40)
 # STANDARD_FONT = pg.font.SysFont("comicsansms", 72)
 
 
-file = open("../../../PycharmProjects/UI/colors.txt")
+file = open("colors.txt")
 colors = []
 
 file.readline()
