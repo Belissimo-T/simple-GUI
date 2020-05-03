@@ -450,7 +450,7 @@ class Checkbox(Widget):
                                 font=self.font, text_size=self.text_size)
         self.text_label.set_constraints(DistanceConstraint(self.checkbox_label, ConstantConstraint(0)),
                                         CenterConstraint(),
-                                        ProportionConstraint(70),
+                                        FillConstraint(self.checkbox_label, "HORIZONTAL"),
                                         EmulatingConstraint(self.checkbox_label, ProportionConstraint(100)))
 
     def draw(self):

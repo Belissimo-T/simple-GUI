@@ -115,10 +115,24 @@ class EmulatingConstraint:
 
         return self.constraint.get(self.widget.parent_widget, orientation, self.widget)
 
-class FillWallConstraint:
-    def __init__(self, side="RIGHT"):
-        self.side = side
-    def get(self, parent_widget, orientation, self_widget):
-        if self.side == "RIGHT":
-            pass
 
+class FillConstraint:
+    def __init__(self, widget=None, orientaion=None, padding=0):
+        self.widget = widget
+        self.orientaion = orientaion
+        self.padding = padding
+
+    def get(self, parent_widget, orientation, self_widget):
+        if orientation not in ["width", "height"]:
+            raise Exception("Fill Constraint can't be used for x or y")
+
+        if self.widget:
+            if self.orientaion in "HORIZONTAL":
+                return parent_widget.get_width() - self.widget.get_width() - self.padding * 2
+            elif self.orientaion in "VERTICAL":
+                return parent_widget.get_height() - self.widget.get_height() - self.padding * 2
+        else:
+            if orientation == "width":
+                return parent_widget.get_width() - self.padding * 2
+            elif orientation == "height":
+                return parent_widget.get_height() - self.padding * 2
