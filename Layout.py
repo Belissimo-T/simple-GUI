@@ -101,3 +101,24 @@ class AspectConstraint:
             return self_widget.get_height() * self.ratio
         elif orientation == "height":
             return self_widget.get_width() * self.ratio
+
+
+class EmulatingConstraint:
+    def __init__(self, widget, constraint, orientation=None):
+        self.widget = widget
+        self.constraint = constraint
+        self.orientation = orientation
+
+    def get(self, parent_widget, orientation, self_widget):
+        if self.orientation:
+            orientation = self.orientation
+
+        return self.constraint.get(self.widget.parent_widget, orientation, self.widget)
+
+class FillWallConstraint:
+    def __init__(self, side="RIGHT"):
+        self.side = side
+    def get(self, parent_widget, orientation, self_widget):
+        if self.side == "RIGHT":
+            pass
+

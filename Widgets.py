@@ -13,8 +13,8 @@ class Widget:
         self.parent_widget.widgets.append(self)
         self.sf = parent_widget.sf
 
-        self.x_constraint = 1
-        self.y_constraint = 1
+        self.x_constraint = None
+        self.y_constraint = None
         self.width_constraint = None
         self.height_constraint = None
 
@@ -358,7 +358,6 @@ class Scrollbar(Widget):
         Widget.update(self)
         if self.selected:
             pos = self.parent_widget.get_mouse_pos()
-            percent = None
             if self.orientation == VERTICAL:
                 m = self.slider_rail.pos[1] - self.slider_rail.height / 2
                 percent = 100 * ((pos[1] - m) / (self.slider_rail.pos[1] + self.slider_rail.height / 2 - m))
@@ -430,19 +429,29 @@ class TextLabel(Widget):
 
 
 class Checkbox(Widget):
-    def __init__(self, parent_widget, label: str, font=STANDARD_FONT, size=40, active_color=Color("black"), inactive_color=Color("dark gray")):
+    def __init__(self, parent_widget, label: str, font=STANDARD_FONT, text_size=40, active_color=Color("black"),
+                 inactive_color=Color("dark gray"), text_color=Color("black"), text_background=Color("white")):
         Widget.__init__(self, parent_widget)
 
         self.inactive_color = inactive_color
         self.active_color = active_color
         self.label = label
+        self.text_color = text_color
+        self.font = font
+        self.text_size = text_size
+        self.text_background = text_background
         self.checkbox_label = Label(self, color=self.inactive_color)
         self.checkbox_label.set_constraints(PixelConstraint(0),
-                                            CenterConstraint,
+                                            CenterConstraint(),
                                             AspectConstraint(1),
                                             ProportionConstraint(100))
-        self.font = font
-        self.size = size
+
+        self.text_label = Label(self, text=self.label, color=self.text_background, text_color=self.text_color,
+                                font=self.font, text_size=self.text_size)
+        self.text_label.set_constraints(DistanceConstraint(self.checkbox_label, ConstantConstraint(0)),
+                                        CenterConstraint(),
+                                        ProportionConstraint(70),
+                                        EmulatingConstraint(self.checkbox_label, ProportionConstraint(100)))
 
     def draw(self):
         Widget.draw(self)

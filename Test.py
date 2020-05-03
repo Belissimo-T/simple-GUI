@@ -30,7 +30,7 @@ button3.set_constraints(CenterConstraint(),
                         PixelConstraint(10),
                         ProportionConstraint(10))
 
-checkbox = Checkbox(frame, "ES GEHT")
+checkbox = Checkbox(frame, "ES GEHT", inactive_color=Color("black"))
 checkbox.set_constraints(CenterConstraint(),
                          DistanceConstraint(button3, ConstantConstraint(10)),
                          PixelConstraint(10),
