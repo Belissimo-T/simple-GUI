@@ -24,16 +24,19 @@ else:
 
 
 class Color:
-    def __init__(self, color, alpha: int = 255):
+    def __init__(self, color, alpha=255):
         if type(color) == str:
             for color_tupel in colors:
                 if color_tupel[1] == color:
                     r = color_tupel[0][0]
                     g = color_tupel[0][1]
                     b = color_tupel[0][2]
-                    self.color = (r, g, b, alpha)
+                    self.color = (r, g, b)
         elif type(color) == tuple:
             self.color = (color[0], color[1], color[2], alpha)
+
+    def __mul__(self, other):
+        return Color((self.color[0] * other, self.color[1] * other, self.color[2] * other))
 
     def get(self):
         return self.color

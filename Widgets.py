@@ -439,6 +439,15 @@ class Checkbox(Widget):
             self.checkbox_label.hover_color = self.active_color
             self.status = True
 
+    def click_callback_down(self):
+        if self.status:
+            self.checkbox_label.u_color = self.active_color*0.5
+            self.checkbox_label.hover_color = self.active_color*0.5
+        else:
+            self.checkbox_label.u_color = self.inactive_color*0.5
+            self.checkbox_label.hover_color = self.inactive_color*0.5
+
+
     def __init__(self, parent_widget, label: str, font=STANDARD_FONT, text_size=25, active_color=Color("green"),
                  inactive_color=Color("red"), text_color=Color("black"), text_background=Color("white")):
         Widget.__init__(self, parent_widget)
@@ -463,7 +472,8 @@ class Checkbox(Widget):
                                         CenterConstraint(),
                                         FillConstraint(self.checkbox_label, "HORIZONTAL"),
                                         EmulatingConstraint(self.checkbox_label, ProportionConstraint(100)))
-        self.checkbox_label.bind(lambda coord: self.click_callback())
+        self.checkbox_label.bind(lambda coord: self.click_callback(), "up")
+        self.checkbox_label.bind(lambda coord: self.click_callback_down(), "down")
 
     def draw(self):
         Widget.draw(self)
