@@ -429,14 +429,25 @@ class TextLabel(Widget):
 
 
 class Checkbox(Widget):
-    def __init__(self, parent_widget, label: str, font=STANDARD_FONT, text_size=40, active_color=Color("black"),
-                 inactive_color=Color("dark gray"), text_color=Color("black"), text_background=Color("white")):
+    def click_callback(self):
+        if self.status:
+            self.checkbox_label.u_color = self.inactive_color
+            self.checkbox_label.hover_color = self.inactive_color
+            self.status = False
+        else:
+            self.checkbox_label.u_color = self.active_color
+            self.checkbox_label.hover_color = self.active_color
+            self.status = True
+
+    def __init__(self, parent_widget, label: str, font=STANDARD_FONT, text_size=25, active_color=Color("green"),
+                 inactive_color=Color("red"), text_color=Color("black"), text_background=Color("white")):
         Widget.__init__(self, parent_widget)
 
         self.inactive_color = inactive_color
         self.active_color = active_color
         self.label = label
         self.text_color = text_color
+        self.status = False
         self.font = font
         self.text_size = text_size
         self.text_background = text_background
@@ -452,6 +463,13 @@ class Checkbox(Widget):
                                         CenterConstraint(),
                                         FillConstraint(self.checkbox_label, "HORIZONTAL"),
                                         EmulatingConstraint(self.checkbox_label, ProportionConstraint(100)))
+        self.checkbox_label.bind(lambda coord: self.click_callback())
 
     def draw(self):
         Widget.draw(self)
+
+    def get(self):
+        return self.status
+
+    def set(self, value: bool):
+        return self.status
