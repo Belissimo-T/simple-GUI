@@ -22,6 +22,8 @@ class Widget:
         self.width = 1
         self.height = 1
 
+        self.show = True
+
         self.hover_events = []
         self.draw_list = []
 
@@ -94,10 +96,10 @@ class Widget:
             widget.update()
 
     def draw(self):
-        for widget in self.widgets:
-            widget.draw()
-        [func() for func in self.draw_list]
-
+        if self.show:
+            for widget in self.widgets:
+                widget.draw()
+            [func() for func in self.draw_list]
 
     def rect(self, position_one, position_two, fill):
         self.parent_widget.rect(position_one, position_two, fill)
@@ -161,75 +163,76 @@ class Label(Widget):
         self.color = self.u_color
 
     def draw(self):
-        if self.rounded_corner_radius:
+        if self.show:
+            if self.rounded_corner_radius:
 
-            self.parent_widget.rect((self.pos[0] - self.width / 2 + self.rounded_corner_radius,
-                                     self.pos[1] - self.height / 2 + self.rounded_corner_radius),
-                                    (self.pos[0] + self.width / 2 - self.rounded_corner_radius,
-                                     self.pos[1] + self.height / 2 - self.rounded_corner_radius), fill=self.color)
-            # four arcs
-            pos_ol = (self.pos[0] - self.width / 2 + self.rounded_corner_radius,
-                      self.pos[1] - self.height / 2 + self.rounded_corner_radius)
-            pos_or = (self.pos[0] + self.width / 2 - self.rounded_corner_radius,
-                      self.pos[1] - self.height / 2 + self.rounded_corner_radius)
-            pos_ul = (self.pos[0] - self.width / 2 + self.rounded_corner_radius,
-                      self.pos[1] + self.height / 2 - self.rounded_corner_radius)
-            pos_ur = (self.pos[0] + self.width / 2 - self.rounded_corner_radius,
-                      self.pos[1] + self.height / 2 - self.rounded_corner_radius)
+                self.parent_widget.rect((self.pos[0] - self.width / 2 + self.rounded_corner_radius,
+                                         self.pos[1] - self.height / 2 + self.rounded_corner_radius),
+                                        (self.pos[0] + self.width / 2 - self.rounded_corner_radius,
+                                         self.pos[1] + self.height / 2 - self.rounded_corner_radius), fill=self.color)
+                # four arcs
+                pos_ol = (self.pos[0] - self.width / 2 + self.rounded_corner_radius,
+                          self.pos[1] - self.height / 2 + self.rounded_corner_radius)
+                pos_or = (self.pos[0] + self.width / 2 - self.rounded_corner_radius,
+                          self.pos[1] - self.height / 2 + self.rounded_corner_radius)
+                pos_ul = (self.pos[0] - self.width / 2 + self.rounded_corner_radius,
+                          self.pos[1] + self.height / 2 - self.rounded_corner_radius)
+                pos_ur = (self.pos[0] + self.width / 2 - self.rounded_corner_radius,
+                          self.pos[1] + self.height / 2 - self.rounded_corner_radius)
 
-            self.parent_widget.oval(pos_ol, self.rounded_corner_radius, fill=self.color)
-            self.parent_widget.oval(pos_or, self.rounded_corner_radius, fill=self.color)
-            self.parent_widget.oval(pos_ul, self.rounded_corner_radius, fill=self.color)
-            self.parent_widget.oval(pos_ur, self.rounded_corner_radius, fill=self.color)
+                self.parent_widget.oval(pos_ol, self.rounded_corner_radius, fill=self.color)
+                self.parent_widget.oval(pos_or, self.rounded_corner_radius, fill=self.color)
+                self.parent_widget.oval(pos_ul, self.rounded_corner_radius, fill=self.color)
+                self.parent_widget.oval(pos_ur, self.rounded_corner_radius, fill=self.color)
 
-            # four rects
-            pos1_l = (self.pos[0] - self.width / 2, self.pos[1] - self.height / 2 + self.rounded_corner_radius)
-            pos2_l = (self.pos[0] - self.width / 2 + self.rounded_corner_radius,
-                      self.pos[1] + self.height / 2 - self.rounded_corner_radius)
-            pos1_o = (self.pos[0] - self.width / 2 + self.rounded_corner_radius, self.pos[1] - self.height / 2)
-            pos2_o = (self.pos[0] + self.width / 2 - self.rounded_corner_radius,
-                      self.pos[1] - self.height / 2 + self.rounded_corner_radius + 1)
-            pos1_r = (self.pos[0] + self.width / 2, self.pos[1] - self.height / 2 + self.rounded_corner_radius)
-            pos2_r = (self.pos[0] + self.width / 2 - self.rounded_corner_radius,
-                      self.pos[1] + self.height / 2 - self.rounded_corner_radius)
-            pos1_u = (self.pos[0] - self.width / 2 + self.rounded_corner_radius, self.pos[1] + self.height / 2)
-            pos2_u = (self.pos[0] + self.width / 2 - self.rounded_corner_radius,
-                      self.pos[1] + self.height / 2 - self.rounded_corner_radius)
+                # four rects
+                pos1_l = (self.pos[0] - self.width / 2, self.pos[1] - self.height / 2 + self.rounded_corner_radius)
+                pos2_l = (self.pos[0] - self.width / 2 + self.rounded_corner_radius,
+                          self.pos[1] + self.height / 2 - self.rounded_corner_radius)
+                pos1_o = (self.pos[0] - self.width / 2 + self.rounded_corner_radius, self.pos[1] - self.height / 2)
+                pos2_o = (self.pos[0] + self.width / 2 - self.rounded_corner_radius,
+                          self.pos[1] - self.height / 2 + self.rounded_corner_radius + 1)
+                pos1_r = (self.pos[0] + self.width / 2, self.pos[1] - self.height / 2 + self.rounded_corner_radius)
+                pos2_r = (self.pos[0] + self.width / 2 - self.rounded_corner_radius,
+                          self.pos[1] + self.height / 2 - self.rounded_corner_radius)
+                pos1_u = (self.pos[0] - self.width / 2 + self.rounded_corner_radius, self.pos[1] + self.height / 2)
+                pos2_u = (self.pos[0] + self.width / 2 - self.rounded_corner_radius,
+                          self.pos[1] + self.height / 2 - self.rounded_corner_radius)
 
-            self.parent_widget.rect(pos1_l, pos2_l, fill=self.color)
-            self.parent_widget.rect(pos1_o, pos2_o, fill=self.color)
-            self.parent_widget.rect(pos1_r, pos2_r, fill=self.color)
-            self.parent_widget.rect(pos1_u, pos2_u, fill=self.color)
-        else:
-            self.parent_widget.rect((self.pos[0] - self.width / 2,
-                                     self.pos[1] - self.height / 2),
-                                    (self.pos[0] + self.width / 2,
-                                     self.pos[1] + self.height / 2), fill=self.color)
+                self.parent_widget.rect(pos1_l, pos2_l, fill=self.color)
+                self.parent_widget.rect(pos1_o, pos2_o, fill=self.color)
+                self.parent_widget.rect(pos1_r, pos2_r, fill=self.color)
+                self.parent_widget.rect(pos1_u, pos2_u, fill=self.color)
+            else:
+                self.parent_widget.rect((self.pos[0] - self.width / 2,
+                                         self.pos[1] - self.height / 2),
+                                        (self.pos[0] + self.width / 2,
+                                         self.pos[1] + self.height / 2), fill=self.color)
 
-        # surface = self.font.render(self.text, (0, 0, 0))[0]
-        # print("blit", self.text)
-        # self.sf.blit(surface, (0, 0))
-        # pos = (self.pos[0] - self.width / 2, self.pos[1] - self.height / 2)
+            # surface = self.font.render(self.text, (0, 0, 0))[0]
+            # print("blit", self.text)
+            # self.sf.blit(surface, (0, 0))
+            # pos = (self.pos[0] - self.width / 2, self.pos[1] - self.height / 2)
 
-        pos = [0, 0]
-        w, h = self.get_size_of_text(self._text, self.text_size, self.font)
+            pos = [0, 0]
+            w, h = self.get_size_of_text(self._text, self.text_size, self.font)
 
-        if self._text:
-            if self.text_anchor[1] == "W":
-                pos[0] = self.pos[0] - self.width / 2
-            elif self.text_anchor[1] == "C":
-                pos[0] = self.pos[0] - w / 2
-            elif self.text_anchor[1] == "E":
-                pos[0] = self.pos[0] - w + self.width / 2
+            if self._text:
+                if self.text_anchor[1] == "W":
+                    pos[0] = self.pos[0] - self.width / 2
+                elif self.text_anchor[1] == "C":
+                    pos[0] = self.pos[0] - w / 2
+                elif self.text_anchor[1] == "E":
+                    pos[0] = self.pos[0] - w + self.width / 2
 
-            if self.text_anchor[0] == "N":
-                pos[1] = self.pos[1] - self.height / 2
-            elif self.text_anchor[0] == "C":
-                pos[1] = self.pos[1] - h / 2
-            elif self.text_anchor[0] == "S":
-                pos[1] = self.pos[1] - h + self.height / 2
+                if self.text_anchor[0] == "N":
+                    pos[1] = self.pos[1] - self.height / 2
+                elif self.text_anchor[0] == "C":
+                    pos[1] = self.pos[1] - h / 2
+                elif self.text_anchor[0] == "S":
+                    pos[1] = self.pos[1] - h + self.height / 2
 
-        self.text(pos, self._text, self.text_size, self.text_color, self.font)
+            self.text(pos, self._text, self.text_size, self.text_color, self.font)
 
         Widget.draw(self)
 
@@ -359,50 +362,51 @@ class Scrollbar(Widget):
 
     def update(self):
         Widget.update(self)
-        if self.selected:
-            pos = self.parent_widget.get_mouse_pos()
-            if self.orientation == VERTICAL:
-                m = self.slider_rail.pos[1] - self.slider_rail.height / 2
-                percent = 100 * ((pos[1] - m) / (self.slider_rail.pos[1] + self.slider_rail.height / 2 - m))
-                percent = max(min(percent, 100), 0)
-                self.should_percent = percent
-                # self.slider_label.set_y_constraint(ProportionConstraint(percent))
-            elif self.orientation == HORIZONTAL:
-                m = self.slider_rail.pos[0] - self.slider_rail.width / 2
-                percent = 100 * ((pos[0] - m) / (self.slider_rail.pos[0] + self.slider_rail.width / 2 - m))
-                percent = max(min(percent, 100), 0)
-                self.should_percent = percent
-                # self.slider_label.set_x_constraint(ProportionConstraint(percent))
-            if not self.get_pressed()[0]:
-                self.selected = False
+        if self.show:
+            if self.selected:
+                pos = self.parent_widget.get_mouse_pos()
+                if self.orientation == VERTICAL:
+                    m = self.slider_rail.pos[1] - self.slider_rail.height / 2
+                    percent = 100 * ((pos[1] - m) / (self.slider_rail.pos[1] + self.slider_rail.height / 2 - m))
+                    percent = max(min(percent, 100), 0)
+                    self.should_percent = percent
+                    # self.slider_label.set_y_constraint(ProportionConstraint(percent))
+                elif self.orientation == HORIZONTAL:
+                    m = self.slider_rail.pos[0] - self.slider_rail.width / 2
+                    percent = 100 * ((pos[0] - m) / (self.slider_rail.pos[0] + self.slider_rail.width / 2 - m))
+                    percent = max(min(percent, 100), 0)
+                    self.should_percent = percent
+                    # self.slider_label.set_x_constraint(ProportionConstraint(percent))
+                if not self.get_pressed()[0]:
+                    self.selected = False
 
-        self.slider_label._text = str(round(self._get(self.is_percent)))
-
-        if self.orientation == VERTICAL:
-            m = self.background_label.get_y() - self.background_label.get_height() / 2
-
-            percent = 100 * ((self.background_label.get_y() +
-                              self.background_label.get_height() / 2 - self.slider_label.get_height() - m) /
-                             (self.background_label.get_y() + self.background_label.get_height() / 2 - m))
-
-            self.slider_rail.set_height_constraint(ProportionConstraint(percent))
-
-        elif self.orientation == HORIZONTAL:
-            m = self.background_label.get_x() - self.background_label.get_width() / 2
-
-            percent = 100 * ((self.background_label.get_x() +
-                              self.background_label.get_width() / 2 - self.slider_label.get_width() - m) /
-                             (self.background_label.get_x() + self.background_label.get_width() / 2 - m))
-
-            self.slider_rail.set_width_constraint(ProportionConstraint(percent))
-
-        if self.is_percent != self.should_percent:
-            self.is_percent += (self.should_percent - self.is_percent) * self.viscosity
+            self.slider_label._text = str(round(self._get(self.is_percent)))
 
             if self.orientation == VERTICAL:
-                self.slider_label.set_y_constraint(ProportionConstraint(self.is_percent))
+                m = self.background_label.get_y() - self.background_label.get_height() / 2
+
+                percent = 100 * ((self.background_label.get_y() +
+                                  self.background_label.get_height() / 2 - self.slider_label.get_height() - m) /
+                                 (self.background_label.get_y() + self.background_label.get_height() / 2 - m))
+
+                self.slider_rail.set_height_constraint(ProportionConstraint(percent))
+
             elif self.orientation == HORIZONTAL:
-                self.slider_label.set_x_constraint(ProportionConstraint(self.is_percent))
+                m = self.background_label.get_x() - self.background_label.get_width() / 2
+
+                percent = 100 * ((self.background_label.get_x() +
+                                  self.background_label.get_width() / 2 - self.slider_label.get_width() - m) /
+                                 (self.background_label.get_x() + self.background_label.get_width() / 2 - m))
+
+                self.slider_rail.set_width_constraint(ProportionConstraint(percent))
+
+            if self.is_percent != self.should_percent:
+                self.is_percent += (self.should_percent - self.is_percent) * self.viscosity
+
+                if self.orientation == VERTICAL:
+                    self.slider_label.set_y_constraint(ProportionConstraint(self.is_percent))
+                elif self.orientation == HORIZONTAL:
+                    self.slider_label.set_x_constraint(ProportionConstraint(self.is_percent))
 
 
 class TextLabel(Widget):
@@ -425,10 +429,12 @@ class TextLabel(Widget):
 
     def draw(self):
         Widget.draw(self)
-        pos = (self.pos[0] - self.width / 2, self.pos[1] - self.height / 2)
-        self.multiple_line_text(pos, self._text, self.width, self.text_size, self.line_distance, self.text_bound,
-                                self.color,
-                                self.font)
+
+        if self.show:
+            pos = (self.pos[0] - self.width / 2, self.pos[1] - self.height / 2)
+            self.multiple_line_text(pos, self._text, self.width, self.text_size, self.line_distance, self.text_bound,
+                                    self.color,
+                                    self.font)
 
 
 class Checkbox(Widget):
