@@ -444,12 +444,11 @@ class Checkbox(Widget):
 
     def click_callback_down(self):
         if self.status:
-            self.checkbox_label.u_color = self.active_color*0.5
-            self.checkbox_label.hover_color = self.active_color*0.5
+            self.checkbox_label.u_color = self.active_color * 0.5
+            self.checkbox_label.hover_color = self.active_color * 0.5
         else:
-            self.checkbox_label.u_color = self.inactive_color*0.5
-            self.checkbox_label.hover_color = self.inactive_color*0.5
-
+            self.checkbox_label.u_color = self.inactive_color * 0.5
+            self.checkbox_label.hover_color = self.inactive_color * 0.5
 
     def __init__(self, parent_widget, label: str, font=STANDARD_FONT, text_size=25, active_color=Color("green"),
                  inactive_color=Color("red"), text_color=Color("black"), text_background=Color("white")):

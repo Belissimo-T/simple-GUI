@@ -30,19 +30,19 @@ button3.set_constraints(CenterConstraint(),
                         PixelConstraint(10),
                         ProportionConstraint(10))
 
-checkbox1 = Checkbox(frame, "ES GEHT1", inactive_color=Color("red"))
+checkbox1 = Checkbox(frame, "ES GEHT1")
 checkbox1.set_constraints(CenterConstraint(),
                          DistanceConstraint(button3, ConstantConstraint(10)),
                          PixelConstraint(10),
                          ProportionConstraint(5))
 
-checkbox2 = Checkbox(frame, "ES GEHT2", inactive_color=Color("red"))
+checkbox2 = Checkbox(frame, "ES GEHT2")
 checkbox2.set_constraints(CenterConstraint(),
                          DistanceConstraint(checkbox1, ConstantConstraint(10)),
                          PixelConstraint(10),
                          ProportionConstraint(5))
 
-checkbox3 = Checkbox(frame, "ES GEHT3", inactive_color=Color("red"))
+checkbox3 = Checkbox(frame, "ES GEHT3")
 checkbox3.set_constraints(CenterConstraint(),
                          DistanceConstraint(checkbox2, ConstantConstraint(10)),
                          PixelConstraint(10),
@@ -60,7 +60,7 @@ slider.set_constraints(CenterConstraint(),
                        ProportionConstraint(90),
                        ConstantConstraint(20))
 
-slider2 = Scrollbar(frame2, orientation=VERTICAL, standard_value=50)
+slider2 = Scrollbar(frame2, orientation=VERTICAL, standard_value=50, value_range=(-50, 300), viscosity=1)
 slider2.set_constraints(ProportionConstraint(30),
                         PixelConstraint(50),
                         ProportionConstraint(20),
@@ -84,8 +84,7 @@ slider_label.set_constraints(CenterConstraint(),
                              ProportionConstraint(90),
                              ProportionConstraint(8))
 
-text = """
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
+text = """Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
 At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. 
 Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."""
 
@@ -101,7 +100,7 @@ def set_text_bound(t):
     text_label.text_bound = t
 
 
-frame.bind(lambda coord: print("LOL"))
+frame.bind(lambda coord: print(coord))
 button1.bind(lambda coord: set_text_bound("LEFT"))
 button2.bind(lambda coord: set_text_bound("CENTER"))
 button3.bind(lambda coord: set_text_bound("RIGHT"))
