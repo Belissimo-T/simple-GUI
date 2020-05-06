@@ -96,7 +96,7 @@ class Window:
     def update(self):
         self.i += 1
         self.clock.tick()
-        if (self.i % 2) == 0:
+        if (self.i % 1) == 0:
             self.mouse_pos = pg.mouse.get_pos()
         self.title(str(self.clock.get_fps()))
         self.width = self.config["width"]
@@ -105,7 +105,6 @@ class Window:
         self.surface = pg.Surface((self.config["width"], self.config["height"]))
         self.surface.fill(self.config["background"].get())
         self.sf = self.surface
-        # self.root.fill(self.config["background"].get())
         [func() for func in self.config["loop"]]
         for widget in self.widgets:
             widget.update()

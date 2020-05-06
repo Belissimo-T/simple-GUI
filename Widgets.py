@@ -23,6 +23,7 @@ class Widget:
         self.height = 1
 
         self.hover_events = []
+        self.draw_list = []
 
     def update_x_constraint(self):
         self.pos = (self.x_constraint.get(self.parent_widget, "x", self), self.pos[1])
@@ -95,6 +96,8 @@ class Widget:
     def draw(self):
         for widget in self.widgets:
             widget.draw()
+        [func() for func in self.draw_list]
+
 
     def rect(self, position_one, position_two, fill):
         self.parent_widget.rect(position_one, position_two, fill)
@@ -482,4 +485,4 @@ class Checkbox(Widget):
         return self.status
 
     def set(self, value: bool):
-        return self.status
+        self.status = value
