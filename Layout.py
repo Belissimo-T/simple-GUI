@@ -1,4 +1,12 @@
-class PixelConstraint:
+class Constraint:
+    def __eq__(self, other):
+        if not isinstance(other, Constraint):
+            return False
+        # print(self, other)
+        return vars(self) == vars(other)
+
+
+class PixelConstraint(Constraint):
     def __init__(self, number):
         self.number = number
 
@@ -19,7 +27,7 @@ class PixelConstraint:
             return parent_widget.get_height() - self.number * 2
 
 
-class CenterConstraint:
+class CenterConstraint(Constraint):
     @staticmethod
     def get(parent_widget, orientation, self_widget):
         if orientation == "x":
@@ -30,7 +38,7 @@ class CenterConstraint:
             raise Exception("Center Constraint can't be used for " + orientation)
 
 
-class ProportionConstraint:
+class ProportionConstraint(Constraint):
     def __init__(self, percent):
         self.multiplier = percent / 100
 
@@ -45,7 +53,7 @@ class ProportionConstraint:
             return parent_widget.get_y() - parent_widget.get_height() / 2 + parent_widget.get_height() * self.multiplier
 
 
-class ConstantConstraint:
+class ConstantConstraint(Constraint):
     def __init__(self, constant):
         self.constant = constant
 
@@ -53,7 +61,7 @@ class ConstantConstraint:
         return self.constant
 
 
-class DistanceConstraint:
+class DistanceConstraint(Constraint):
     def __init__(self, widget, distance_constraint=ConstantConstraint(0)):
         self.widget = widget
         self.distance_constraint = distance_constraint
@@ -72,7 +80,7 @@ class DistanceConstraint:
                 return self.widget.get_y() + self.widget.get_height() / 2 + distance + self_widget.get_height() / 2
 
 
-class ProportionOfConstraint:
+class ProportionOfConstraint(Constraint):
     def __init__(self, widget, percent):
         self.widget = widget
         self.multiplier = percent / 100
@@ -88,7 +96,7 @@ class ProportionOfConstraint:
             return self.widget.get_height() * self.multiplier
 
 
-class AspectConstraint:
+class AspectConstraint(Constraint):
     def __init__(self, ratio):
         self.ratio = ratio
 
@@ -103,7 +111,7 @@ class AspectConstraint:
             return self_widget.get_width() * self.ratio
 
 
-class EmulatingConstraint:
+class EmulatingConstraint(Constraint):
     def __init__(self, widget, constraint, orientation=None):
         self.widget = widget
         self.constraint = constraint
@@ -116,7 +124,7 @@ class EmulatingConstraint:
         return self.constraint.get(self.widget.parent_widget, orientation, self.widget)
 
 
-class FillConstraint:
+class FillConstraint(Constraint):
     def __init__(self, widget=None, orientaion=None, padding=0):
         self.widget = widget
         self.orientaion = orientaion

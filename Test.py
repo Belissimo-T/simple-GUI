@@ -32,21 +32,21 @@ button3.set_constraints(CenterConstraint(),
 
 checkbox1 = Checkbox(frame, "ES GEHT1")
 checkbox1.set_constraints(CenterConstraint(),
-                         DistanceConstraint(button3, ConstantConstraint(10)),
-                         PixelConstraint(10),
-                         ProportionConstraint(5))
+                          DistanceConstraint(button3, ConstantConstraint(10)),
+                          PixelConstraint(10),
+                          ProportionConstraint(5))
 
 checkbox2 = Checkbox(frame, "ES GEHT2")
 checkbox2.set_constraints(CenterConstraint(),
-                         DistanceConstraint(checkbox1, ConstantConstraint(10)),
-                         PixelConstraint(10),
-                         ProportionConstraint(5))
+                          DistanceConstraint(checkbox1, ConstantConstraint(10)),
+                          PixelConstraint(10),
+                          ProportionConstraint(5))
 
 checkbox3 = Checkbox(frame, "ES GEHT3")
 checkbox3.set_constraints(CenterConstraint(),
-                         DistanceConstraint(checkbox2, ConstantConstraint(10)),
-                         PixelConstraint(10),
-                         ProportionConstraint(5))
+                          DistanceConstraint(checkbox2, ConstantConstraint(10)),
+                          PixelConstraint(10),
+                          ProportionConstraint(5))
 
 frame2 = Label(root, Color("dark grey"))
 frame2.set_constraints(PixelConstraint(-10),
@@ -60,7 +60,7 @@ slider.set_constraints(CenterConstraint(),
                        ProportionConstraint(90),
                        ConstantConstraint(20))
 
-slider2 = Scrollbar(frame2, orientation=VERTICAL, standard_value=50, value_range=(-50, 300), viscosity=1)
+slider2 = Scrollbar(frame2, orientation=VERTICAL, standard_value=50, value_range=(0, 300), viscosity=0.9)
 slider2.set_constraints(ProportionConstraint(30),
                         PixelConstraint(50),
                         ProportionConstraint(20),
@@ -84,8 +84,11 @@ slider_label.set_constraints(CenterConstraint(),
                              ProportionConstraint(90),
                              ProportionConstraint(8))
 
-text = """Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
-At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. 
+text = """Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et \
+dolore magna aliquyam erat, sed diam voluptua. 
+At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem \
+ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt \
+ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. 
 Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."""
 
 text_label = TextLabel(root, text, text_size=40, background_color=Color("red"))
@@ -94,27 +97,21 @@ text_label.set_constraints(CenterConstraint(),
                            ProportionConstraint(40),
                            PixelConstraint(10))
 
-
-def set_text_bound(t):
-    global text_label
-    text_label.text_bound = t
-
-
 frame.bind(lambda coord: print(coord))
-button1.bind(lambda coord: set_text_bound("LEFT"))
-button2.bind(lambda coord: set_text_bound("CENTER"))
-button3.bind(lambda coord: set_text_bound("RIGHT"))
+button1.bind(lambda coord: text_label.set_text_anchor("LEFT"))
+button2.bind(lambda coord: text_label.set_text_anchor("CENTER"))
+button3.bind(lambda coord: text_label.set_text_anchor("RIGHT"))
 
 mode = True
 amount = 2
 
 while 1:
     root.update()
-    slider_label._text = str(round(slider2.get(), 4))
+    slider_label.set_text(str(round(slider2.get(), 4)))
 
     v = slider3.get()
     text_label.line_distance = v
-    viscosity_label._text = str(round(v, 4))
+    viscosity_label.set_text(str(round(v, 4)))
 
     text_label.set_width_constraint(ProportionConstraint(slider.get()))
     text_label.text_size = slider2.get()

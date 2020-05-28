@@ -6,7 +6,6 @@ HORIZONTAL = "HORIZONTAL"
 
 
 class Widget:
-
     def __init__(self, parent_widget):
         self.widgets = []
         self.parent_widget = parent_widget
@@ -26,6 +25,10 @@ class Widget:
 
         self.hover_events = []
         self.draw_list = []
+
+        self.redraw = True
+        self.redraw_draw = True
+        self.force = False
 
     def update_x_constraint(self):
         self.pos = (self.x_constraint.get(self.parent_widget, "x", self), self.pos[1])
@@ -53,53 +56,96 @@ class Widget:
         pass
 
     def set_x_constraint(self, constraint):
+        if self.x_constraint != constraint:
+            self.set_redraw(force_redraw=True)
         self.x_constraint = constraint
 
     def set_y_constraint(self, constraint):
+        if self.y_constraint != constraint:
+            self.set_redraw(force_redraw=True)
         self.y_constraint = constraint
 
     def set_width_constraint(self, constraint):
+        if self.width_constraint != constraint:
+            self.set_redraw(force_redraw=True)
+            try:
+                print("OHHHHHHHHHHHH DIFFE RENNT", self.width_constraint.multiplier, constraint.multiplier)
+            except AttributeError:
+                print("OHHHHHHHHHHHH DIFFE RENNT")
         self.width_constraint = constraint
 
     def set_height_constraint(self, constraint):
+        if self.height_constraint != constraint:
+            self.set_redraw(force_redraw=True)
         self.height_constraint = constraint
 
     def set_constraints(self, x_constraint=None, y_constraint=None, width_constraint=None, height_constraint=None):
+        changed = False
+
         if x_constraint:
-            self.set_x_constraint(x_constraint)
+            if self.x_constraint != x_constraint:
+                changed = True
+                self.x_constraint = x_constraint
         if y_constraint:
-            self.set_y_constraint(y_constraint)
+            if self.y_constraint != x_constraint:
+                changed = True
+                self.y_constraint = y_constraint
         if width_constraint:
-            self.set_width_constraint(width_constraint)
+            if self.width_constraint != width_constraint:
+                changed = True
+                self.width_constraint = width_constraint
         if height_constraint:
-            self.set_height_constraint(height_constraint)
+            if self.height_constraint != height_constraint:
+                changed = True
+                self.height_constraint = height_constraint
+
+        if changed:
+            self.set_redraw(force_redraw=True)
 
     def get_x(self):
-        # self.update_x_constraint()
+        self.update_x_constraint()
         return self.pos[0]
 
     def get_y(self):
-        # self.update_y_constraint()
+        self.update_y_constraint()
         return self.pos[1]
 
     def get_width(self):
-        # self.update_width_constraint()
+        self.update_width_constraint()
         return self.width
 
     def get_height(self):
-        # self.update_height_constraint()
+        self.update_height_constraint()
         return self.height
 
-    def update(self):
-        self.update_constraints()
+    def update(self, videoresize=False):
+        if videoresize:
+            print("UPDATE VIDEORESIZE")
         for widget in self.widgets:
-            widget.update()
+            widget.update(videoresize)
 
-    def draw(self):
-        if self.show:
+    def _draw_(self):
+        pass
+
+    def draw(self, force=False, depth=0):
+        print("\t" * depth + "draw", self, "FORCE:", self.force, force, "\\(^-^)/" * (self.force or force))
+
+        force = self.force or force
+
+        if self.redraw_draw or force:
+            self._draw_()
+
+        self.update_constraints()
+        if (self.show and self.redraw) or force:
             for widget in self.widgets:
-                widget.draw()
+                if widget.redraw or force:
+                    widget.draw(force, depth + 1)
+
             [func() for func in self.draw_list]
+
+        self.redraw = False
+        self.redraw_draw = False
+        self.force = False
 
     def rect(self, position_one, position_two, fill):
         self.parent_widget.rect(position_one, position_two, fill)
@@ -140,6 +186,12 @@ class Widget:
                            font=STANDARD_FONT):
         self.parent_widget.multiple_line_text(position, text, width, size, line_distance, bound, color, font)
 
+    def set_redraw(self, draw=True, force_redraw=False):
+        self.redraw = True
+        self.redraw_draw = draw or self.redraw_draw or force_redraw
+        self.force = self.force or force_redraw
+        self.parent_widget.set_redraw(False, force_redraw)
+
 
 class Label(Widget):
     def __init__(self, parent_widget, color: Color, text: str = "", rounded_corner_radius=0, status=True,
@@ -162,7 +214,7 @@ class Label(Widget):
             self.hover_color = hover_color
         self.color = self.u_color
 
-    def draw(self):
+    def _draw_(self):
         if self.show:
             if self.rounded_corner_radius:
 
@@ -234,14 +286,25 @@ class Label(Widget):
 
             self.text(pos, self._text, self.text_size, self.text_color, self.font)
 
-        Widget.draw(self)
-
-    def update(self):
-        Widget.update(self)
+    def update(self, videoresize=False):
+        Widget.update(self, videoresize)
+        changed = False
         if self.is_in(self.parent_widget.get_mouse_pos()):
+            if self.color != self.hover_color:
+                changed = True
             self.color = self.hover_color
         else:
+            if self.color != self.u_color:
+                changed = True
             self.color = self.u_color
+
+        if changed:
+            self.set_redraw()
+
+    def set_text(self, text: str = ""):
+        if self._text != text:
+            self._text = text
+            self.set_redraw()
 
 
 class Scrollbar(Widget):
@@ -303,6 +366,8 @@ class Scrollbar(Widget):
         self.is_percent = percent
         self.should_percent = percent
 
+        self.set_redraw()
+
     def set_constraints(self, x_constraint=None, y_constraint=None, width_constraint=None, height_constraint=None):
         Widget.set_constraints(self, x_constraint, y_constraint, width_constraint, height_constraint)
 
@@ -360,8 +425,8 @@ class Scrollbar(Widget):
         self.background_label.bind(self.select, press="down")
         self.set(self.standard_value)
 
-    def update(self):
-        Widget.update(self)
+    def update(self, videoresize=False):
+        Widget.update(self, videoresize)
         if self.show:
             if self.selected:
                 pos = self.parent_widget.get_mouse_pos()
@@ -381,7 +446,7 @@ class Scrollbar(Widget):
                     self.selected = False
 
             self.slider_label._text = str(round(self._get(self.is_percent)))
-
+        if videoresize:
             if self.orientation == VERTICAL:
                 m = self.background_label.get_y() - self.background_label.get_height() / 2
 
@@ -399,18 +464,23 @@ class Scrollbar(Widget):
                                  (self.background_label.get_x() + self.background_label.get_width() / 2 - m))
 
                 self.slider_rail.set_width_constraint(ProportionConstraint(percent))
+                print("ANPASSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS")
 
-            if self.is_percent != self.should_percent:
-                self.is_percent += (self.should_percent - self.is_percent) * self.viscosity
+        if self.is_percent != self.should_percent:
+            delta = (self.should_percent - self.is_percent) * self.viscosity
+            if abs(delta) <= 0.01:
+                self.is_percent = self.should_percent
+            else:
+                self.is_percent += delta
 
-                if self.orientation == VERTICAL:
-                    self.slider_label.set_y_constraint(ProportionConstraint(self.is_percent))
-                elif self.orientation == HORIZONTAL:
-                    self.slider_label.set_x_constraint(ProportionConstraint(self.is_percent))
+            if self.orientation == VERTICAL:
+                self.slider_label.set_y_constraint(ProportionConstraint(self.is_percent))
+            elif self.orientation == HORIZONTAL:
+                self.slider_label.set_x_constraint(ProportionConstraint(self.is_percent))
 
 
 class TextLabel(Widget):
-    def __init__(self, parent_widget, text, line_distance=-10, font=STANDARD_FONT, text_bound="CENTER",
+    def __init__(self, parent_widget, text, line_distance=-10, font=STANDARD_FONT, text_anchor="CENTER",
                  color=Color("black"), text_size=40,
                  background_color=Color("white")):
         Widget.__init__(self, parent_widget)
@@ -419,22 +489,26 @@ class TextLabel(Widget):
         self.color = color
         self.text_size = text_size
         self.line_distance = line_distance
-        self.text_bound = text_bound
+        self.text_anchor = text_anchor
         self.background_color = background_color
-        self.background_label = Label(self, color=self.background_color)
-        self.background_label.set_constraints(PixelConstraint(0),
-                                              PixelConstraint(0),
-                                              ProportionConstraint(100),
-                                              ProportionConstraint(100))
 
-    def draw(self):
-        Widget.draw(self)
-
+    def _draw_(self):
         if self.show:
+            self.parent_widget.rect((self.get_x() - self.get_width() / 2, self.get_y() - self.get_height() / 2),
+                                    (self.get_x() + self.get_width() / 2, self.get_y() + self.get_height() / 2),
+                                    self.background_color)
             pos = (self.pos[0] - self.width / 2, self.pos[1] - self.height / 2)
-            self.multiple_line_text(pos, self._text, self.width, self.text_size, self.line_distance, self.text_bound,
+            self.multiple_line_text(pos, self._text, self.width, self.text_size, self.line_distance, self.text_anchor,
                                     self.color,
                                     self.font)
+
+    def set_text(self, text):
+        self._text = text
+        self.set_redraw()
+
+    def set_text_anchor(self, anchor="CENTER"):
+        self.text_anchor = anchor
+        self.set_redraw()
 
 
 class Checkbox(Widget):
@@ -482,9 +556,6 @@ class Checkbox(Widget):
                                         EmulatingConstraint(self.checkbox_label, ProportionConstraint(100)))
         self.checkbox_label.bind(lambda coord: self.click_callback(), "up")
         self.checkbox_label.bind(lambda coord: self.click_callback_down(), "down")
-
-    def draw(self):
-        Widget.draw(self)
 
     def get(self):
         return self.status

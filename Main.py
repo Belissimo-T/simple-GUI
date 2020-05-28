@@ -68,6 +68,7 @@ class Window:
         self.clock = pg.time.Clock()
         self.mouse_pos = (1, 1)
         self.i = 0
+        self.force = False
 
     @staticmethod
     def quit():
@@ -93,6 +94,10 @@ class Window:
     def configure(self, config: map):
         self.config.update(config)
 
+    def flip(self):
+        self.root.blit(self.surface, (0, 0))
+        pg.display.flip()
+
     def update(self):
         self.i += 1
         self.clock.tick()
@@ -101,15 +106,6 @@ class Window:
         self.title(str(self.clock.get_fps()))
         self.width = self.config["width"]
         self.height = self.config["height"]
-
-        self.surface = pg.Surface((self.config["width"], self.config["height"]))
-        self.surface.fill(self.config["background"].get())
-        self.sf = self.surface
-        [func() for func in self.config["loop"]]
-        for widget in self.widgets:
-            widget.update()
-            widget.draw()
-
         events = pg.event.get()
         for event in events:
             if event.type == pg.QUIT:
@@ -117,14 +113,30 @@ class Window:
                 return
             if event.type == pg.VIDEORESIZE:
                 self.size(event.w, event.h)
+                self.surface = pg.Surface((self.config["width"], self.config["height"]))
+                self.surface.fill(self.config["background"].get())
+                for widget in self.widgets:
+                    widget.update(videoresize=True)
+                    widget.draw(force=True)
+                    # self.flip()
+                    print("force")
             if event.type == pg.MOUSEBUTTONDOWN:
                 [func(event.pos) for func in self.config["mouse"]["down"][event.button]]
 
             if event.type == pg.MOUSEBUTTONUP:
                 [func(event.pos) for func in self.config["mouse"]["up"][event.button]]
-
-        self.root.blit(self.surface, (0, 0))
-        pg.display.flip()
+        print("iter")
+        if self.force:
+            self.surface = pg.Surface((self.config["width"], self.config["height"]))
+            self.surface.fill(self.config["background"].get())
+            print("DELDELDELDELDELDELDELDELDELDLELDELDELDEL")
+        [func() for func in self.config["loop"]]
+        for widget in self.widgets:
+            widget.update()
+            if widget.redraw or self.force:
+                widget.draw(force=self.force)
+        self.flip()
+        self.force = False
 
     def mainloop(self):
         while True:
@@ -148,12 +160,11 @@ class Window:
         self.root.blit(self.surface, (0, 0))
 
     def rect(self, position_1: tuple, position_2: tuple, fill, width: int = 0):
-
         fill = fill.get()
 
         w = position_2[0] - position_1[0]
         h = position_2[1] - position_1[1]
-        pg.draw.rect(self.sf, fill[0:3], pg.Rect(position_1[0], position_1[1], w, h), width)
+        pg.draw.rect(self.surface, fill[0:3], pg.Rect(position_1[0], position_1[1], w, h), width)
 
         # self.root.blit(self.surface, (0, 0))
 
@@ -173,14 +184,14 @@ class Window:
         self.config["mouse"][press][number].append(lambda coord: function(coord) if widget.is_in(coord) else None)
 
     def get_surface(self):
-        return self.sf
+        return self.surface
 
     def get_pressed(self):
         return pygame.mouse.get_pressed()
 
     def text(self, position, text, size=40, color=Color("black"), font=STANDARD_FONT):
         surface = font.render(text, color.get(), size=size)[0]
-        self.get_surface().blit(surface, position)
+        self.surface.blit(surface, position)
 
     @staticmethod
     def get_size_of_text(text, size=40, font=STANDARD_FONT):
@@ -212,8 +223,12 @@ class Window:
                         pos = (position[0] + (width - surface.get_width()) * .5, y)
                     elif bound == "RIGHT":
                         pos = (position[0] + width - surface.get_width(), y)
-                    self.sf.blit(surface, pos)
+                    self.surface.blit(surface, pos)
                     temp_text = [word]
                     y += line_distance + font.get_sized_height(size)
             paragraphs_grouped.append(words_grouped)
             y += line_distance + font.get_sized_height(size)
+
+    def set_redraw(self, draw=True, force_redraw=False):
+        self.force = self.force or force_redraw
+        print("Gtogtogto DELDELDEL", draw, force_redraw)
