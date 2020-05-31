@@ -186,6 +186,9 @@ class Widget:
         self.force = self.force or force_redraw
         self.parent_widget.set_redraw(False, force_redraw)
 
+    def destroy(self):
+        self.parent_widget.widgets.remove(self)
+
 
 class Label(Widget):
     def __init__(self, parent_widget, color: Color, text: str = "", rounded_corner_radius=0, status=True,
