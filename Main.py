@@ -42,7 +42,7 @@ class Color:
         return self.color
 
 
-class Window:
+class PygameWindow:
     widgets = []
 
     def __init__(self):
@@ -63,12 +63,21 @@ class Window:
         self.root = pg.display.set_mode((self.config["width"], self.config["height"]))
         self.surface = pg.Surface((self.config["width"], self.config["height"]))
         self.mainloop_thread = None
-        self.title("Window")
+        self.title = "Window"
         self.sf = self.surface
         self.clock = pg.time.Clock()
         self.mouse_pos = (1, 1)
         self.i = 0
         self.force = False
+
+    @property
+    def title(self):
+        return self.config["title"]
+
+    @title.setter
+    def title(self, title: str):
+        pg.display.set_caption(title)
+        self.config["title"] = title
 
     @staticmethod
     def quit():
@@ -80,10 +89,8 @@ class Window:
         else:
             self.root = pg.display.set_mode((width, height))
         self.config.update({"width": width, "height": height})
-
-    def title(self, title: str):
-        pg.display.set_caption(title)
-        self.config["title"] = title
+        self.width = self.config["width"]
+        self.height = self.config["height"]
 
     def add_loop(self, function):
         self.config["loop"].append(function)
@@ -103,7 +110,7 @@ class Window:
         self.clock.tick()
         if (self.i % 1) == 0:
             self.mouse_pos = pg.mouse.get_pos()
-        self.title(str(self.clock.get_fps()))
+        self.title = str(self.clock.get_fps())
         self.width = self.config["width"]
         self.height = self.config["height"]
         events = pg.event.get()
@@ -119,17 +126,17 @@ class Window:
                     widget.update(videoresize=True)
                     widget.draw(force=True)
                     # self.flip()
-                    print("force")
+                    # print("force")
             if event.type == pg.MOUSEBUTTONDOWN:
                 [func(event.pos) for func in self.config["mouse"]["down"][event.button]]
 
             if event.type == pg.MOUSEBUTTONUP:
                 [func(event.pos) for func in self.config["mouse"]["up"][event.button]]
-        print("iter")
+        # print("iter")
         if self.force:
             self.surface = pg.Surface((self.config["width"], self.config["height"]))
             self.surface.fill(self.config["background"].get())
-            print("DELDELDELDELDELDELDELDELDELDLELDELDELDEL")
+            # print("DELDELDELDELDELDELDELDELDELDLELDELDELDEL")
         [func() for func in self.config["loop"]]
         for widget in self.widgets:
             widget.update()
@@ -231,4 +238,4 @@ class Window:
 
     def set_redraw(self, draw=True, force_redraw=False):
         self.force = self.force or force_redraw
-        print("Gtogtogto DELDELDEL", draw, force_redraw)
+        # print("Gtogtogto DELDELDEL", draw, force_redraw)

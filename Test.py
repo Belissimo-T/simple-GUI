@@ -2,8 +2,8 @@ from Widgets import *
 from Main import *
 from Layout import *
 
-root = Window()
-root.title("Test")
+root = PygameWindow()
+root.title = "Test"
 root.config["background"] = Color((220, 220, 220))
 
 frame = Label(root, Color("dark grey"))
@@ -45,6 +45,12 @@ checkbox2.set_constraints(CenterConstraint(),
 checkbox3 = Checkbox(frame, "ES GEHT3")
 checkbox3.set_constraints(CenterConstraint(),
                           DistanceConstraint(checkbox2, ConstantConstraint(10)),
+                          PixelConstraint(10),
+                          ProportionConstraint(5))
+
+checkbox4 = Checkbox(frame, "ES GEHT4")
+checkbox4.set_constraints(CenterConstraint(),
+                          DistanceConstraint(checkbox3, ConstantConstraint(10)),
                           PixelConstraint(10),
                           ProportionConstraint(5))
 

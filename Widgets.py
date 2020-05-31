@@ -68,10 +68,6 @@ class Widget:
     def set_width_constraint(self, constraint):
         if self.width_constraint != constraint:
             self.set_redraw(force_redraw=True)
-            try:
-                print("OHHHHHHHHHHHH DIFFE RENNT", self.width_constraint.multiplier, constraint.multiplier)
-            except AttributeError:
-                print("OHHHHHHHHHHHH DIFFE RENNT")
         self.width_constraint = constraint
 
     def set_height_constraint(self, constraint):
@@ -119,8 +115,6 @@ class Widget:
         return self.height
 
     def update(self, videoresize=False):
-        if videoresize:
-            print("UPDATE VIDEORESIZE")
         for widget in self.widgets:
             widget.update(videoresize)
 
@@ -128,7 +122,7 @@ class Widget:
         pass
 
     def draw(self, force=False, depth=0):
-        print("\t" * depth + "draw", self, "FORCE:", self.force, force, "\\(^-^)/" * (self.force or force))
+        # print("\t" * depth + "draw", self, "FORCE:", self.force, force, "\\(^-^)/" * (self.force or force))
 
         force = self.force or force
 
@@ -464,7 +458,7 @@ class Scrollbar(Widget):
                                  (self.background_label.get_x() + self.background_label.get_width() / 2 - m))
 
                 self.slider_rail.set_width_constraint(ProportionConstraint(percent))
-                print("ANPASSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS")
+                # print("ANPASSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS")
 
         if self.is_percent != self.should_percent:
             delta = (self.should_percent - self.is_percent) * self.viscosity
