@@ -114,9 +114,9 @@ class Widget:
         self.update_height_constraint()
         return self.height
 
-    def update(self, videoresize=False):
+    def update(self, elapsed_time=17, videoresize=False):
         for widget in self.widgets:
-            widget.update(videoresize)
+            widget.update(elapsed_time, videoresize)
 
     def _draw_(self):
         pass
@@ -283,8 +283,8 @@ class Label(Widget):
 
             self.text(pos, self._text, self.text_size, self.text_color, self.font)
 
-    def update(self, videoresize=False):
-        Widget.update(self, videoresize)
+    def update(self, elapsed_time=17, videoresize=False):
+        Widget.update(self, elapsed_time, videoresize)
         changed = False
         if self.is_in(self.parent_widget.get_mouse_pos()):
             if self.color != self.hover_color:
@@ -422,8 +422,8 @@ class Scrollbar(Widget):
         self.background_label.bind(self.select, press="down")
         self.set(self.standard_value)
 
-    def update(self, videoresize=False):
-        Widget.update(self, videoresize)
+    def update(self, elapsed_time=17, videoresize=False):
+        Widget.update(self, elapsed_time, videoresize)
         if self.show:
             if self.selected:
                 pos = self.parent_widget.get_mouse_pos()
@@ -464,7 +464,8 @@ class Scrollbar(Widget):
                 # print("ANPASSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS")
 
         if self.is_percent != self.should_percent:
-            delta = (self.should_percent - self.is_percent) * self.viscosity
+            factor = elapsed_time/17
+            delta = (self.should_percent - self.is_percent) * min(factor * self.viscosity, 1)
             if abs(delta) <= 0.01:
                 self.is_percent = self.should_percent
             else:

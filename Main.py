@@ -1,11 +1,11 @@
 import pygame as pg
 import pygame.freetype
 import copy
+import time
 
 pygame.freetype.init()
-STANDARD_FONT = pg.freetype.Font("Helvetica-Bold-Font.ttf", 40)
-# STANDARD_FONT = pg.font.SysFont("comicsansms", 72)
-
+# STANDARD_FONT = pg.freetype.Font("Helvetica-Bold-Font.ttf", 40)
+STANDARD_FONT = pg.freetype.SysFont("Consolas", 72)
 
 file = open("colors.txt")
 colors = []
@@ -69,6 +69,7 @@ class PygameWindow:
         self.mouse_pos = (1, 1)
         self.i = 0
         self.force = False
+        self.t = time.time()
 
     @property
     def title(self):
@@ -106,6 +107,9 @@ class PygameWindow:
         pg.display.flip()
 
     def update(self):
+        n_time = time.time()
+        t = (n_time - self.t)*1000
+        self.t = n_time
         self.i += 1
         self.clock.tick()
         if (self.i % 1) == 0:
@@ -123,15 +127,20 @@ class PygameWindow:
                 self.surface = pg.Surface((self.config["width"], self.config["height"]))
                 self.surface.fill(self.config["background"].get())
                 for widget in self.widgets:
-                    widget.update(videoresize=True)
+                    widget.update(t, videoresize=True)
                     widget.draw(force=True)
                     # self.flip()
                     # print("force")
             if event.type == pg.MOUSEBUTTONDOWN:
-                [func(event.pos) for func in self.config["mouse"]["down"][event.button]]
+                for func in self.config["mouse"]["down"][event.button]:
+                    try:
+                        func(event.pos)
+                    except:
+                        pass
 
             if event.type == pg.MOUSEBUTTONUP:
-                [func(event.pos) for func in self.config["mouse"]["up"][event.button]]
+                for func in self.config["mouse"]["up"][event.button]:
+                    func(event.pos)
         # print("iter")
         if self.force:
             self.surface = pg.Surface((self.config["width"], self.config["height"]))
@@ -139,7 +148,7 @@ class PygameWindow:
             # print("DELDELDELDELDELDELDELDELDELDLELDELDELDEL")
         [func() for func in self.config["loop"]]
         for widget in self.widgets:
-            widget.update()
+            widget.update(t, False)
             if widget.redraw or self.force:
                 widget.draw(force=self.force)
         self.flip()

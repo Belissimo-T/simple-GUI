@@ -66,13 +66,13 @@ slider.set_constraints(CenterConstraint(),
                        ProportionConstraint(90),
                        ConstantConstraint(20))
 
-slider2 = Scrollbar(frame2, orientation=VERTICAL, standard_value=50, value_range=(0, 300), viscosity=0.9)
+slider2 = Scrollbar(frame2, orientation=VERTICAL, standard_value=50, value_range=(0, 300), viscosity=0.1)
 slider2.set_constraints(ProportionConstraint(30),
                         PixelConstraint(50),
                         ProportionConstraint(20),
                         ProportionConstraint(65))
 
-slider3 = Scrollbar(frame2, orientation=VERTICAL, standard_value=0, value_range=(-120, 120))
+slider3 = Scrollbar(frame2, orientation=VERTICAL, standard_value=0, value_range=(-120, 120), viscosity=0.1)
 slider3.set_constraints(ProportionConstraint(70),
                         PixelConstraint(50),
                         ProportionConstraint(20),
