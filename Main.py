@@ -60,7 +60,7 @@ class PygameWindow:
         self.width = self.config["width"]
         self.height = self.config["height"]
         self.pos = (0, 0)
-        self.root = pg.display.set_mode((self.config["width"], self.config["height"]))
+        self.root = pg.display.set_mode((self.config["width"], self.config["height"]), pg.RESIZABLE)
         self.surface = pg.Surface((self.config["width"], self.config["height"]))
         self.mainloop_thread = None
         self.title = "Window"
